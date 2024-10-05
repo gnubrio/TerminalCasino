@@ -35,7 +35,6 @@ void gamesMenu(unsigned &balance) {
                    "10x bet\n| B | 20x bet\n| G | 50x bet\n| 7 | 100x bet\n(0) "
                    "Exit\n> ";
             std::getline(std::cin, userInput);
-
             if (userInput == "0") {
               break;
             } else {
@@ -68,7 +67,9 @@ void gamesMenu(unsigned &balance) {
             Blackjack.play(balance, bet);
           }
         } else if (userInput == "1") {
-          // information
+          screenClear();
+          std::cout << "BLACKJACK | Information\nWin: 2x bet\n(0) Exit\n> ";
+          std::getline(std::cin, userInput);
         } else if (userInput == "0") {
           break;
         } else {
