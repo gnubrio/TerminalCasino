@@ -11,7 +11,7 @@ void SlotMachine::play(unsigned &balance, unsigned bet) {
   screenSleep(3);
 }
 
-void SlotMachine::display() {
+void SlotMachine::display() const {
   screenClear();
 
   for (auto &reel : m_Reels) {

@@ -15,13 +15,13 @@ public:
   ~SlotMachine();
 
 private:
-  int m_NumberOfReels = 3;
+  const int m_NumberOfReels = 3;
   std::vector<std::vector<std::string>> m_Reels;
-  std::vector<std::pair<std::string, int>> m_SymbolCounts = {
+  const std::vector<std::pair<std::string, int>> m_SymbolCounts = {
       {"C", 7}, {"O", 5}, {"B", 4}, {"G", 3}, {"7", 1}};
   std::mt19937 m_RandomGenerator;
 
-  void display();
+  void display() const;
   void checkWinnings(unsigned &balance, unsigned bet);
   void spin();
   void initialize();

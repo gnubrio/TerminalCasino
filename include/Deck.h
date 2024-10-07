@@ -17,10 +17,11 @@ public:
 
 private:
   std::vector<std::pair<std::string, std::string>> m_Deck;
-  std::vector<std::string> m_Suits = {"Diamond", "Spades", "Hearts", "Clubs"};
-  std::vector<std::string> m_Ranks = {"Ace",  "2",     "3",   "4", "5",
-                                      "6",    "7",     "8",   "9", "10",
-                                      "Jack", "Queen", "King"};
+  const std::vector<std::string> m_Suits = {"Diamond", "Spades", "Hearts",
+                                            "Clubs"};
+  const std::vector<std::string> m_Ranks = {"Ace",  "2",     "3",   "4", "5",
+                                            "6",    "7",     "8",   "9", "10",
+                                            "Jack", "Queen", "King"};
   std::mt19937 m_RandomGenerator;
 
   void initialize();

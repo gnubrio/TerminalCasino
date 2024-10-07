@@ -23,7 +23,8 @@ private:
   void initialDeal();
   void playerTurn();
   void houseTurn();
-  void displayHands(bool hide = true);
-  int checkHandValue(std::vector<std::pair<std::string, std::string>> &hand);
+  void displayHands(bool hide = true) const;
+  int checkHandValue(
+      std::vector<std::pair<std::string, std::string>> &hand) const;
   void checkWin(unsigned &balance, unsigned &bet, bool end = false);
 };

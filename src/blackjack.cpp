@@ -109,7 +109,7 @@ void Blackjack::houseTurn() {
   }
 }
 
-void Blackjack::displayHands(bool hide) {
+void Blackjack::displayHands(bool hide) const {
   screenClear();
   std::cout << "House hand: | ";
   for (auto &card : m_HouseHand) {
@@ -130,7 +130,7 @@ void Blackjack::displayHands(bool hide) {
 }
 
 int Blackjack::checkHandValue(
-    std::vector<std::pair<std::string, std::string>> &hand) {
+    std::vector<std::pair<std::string, std::string>> &hand) const {
   int score = 0;
   int aceCount = 0;
 
