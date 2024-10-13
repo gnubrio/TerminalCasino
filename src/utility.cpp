@@ -1,4 +1,5 @@
 #include "Utility.h"
+#include "pch.h"
 
 bool isStringValidInt(std::string &str) {
   std::string::const_iterator it = str.begin();

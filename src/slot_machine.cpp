@@ -1,5 +1,6 @@
 #include "SlotMachine.h"
 #include "Utility.h"
+#include "pch.h"
 
 SlotMachine::SlotMachine() { initialize(); }
 
@@ -15,8 +16,8 @@ void SlotMachine::display() const {
   screenClear();
 
   for (auto &reel : m_Reels) {
-    std::cout << "| " << reel[0] << " | " << reel[1] << " | " << reel[2]
-              << " |\n";
+    std::cout << "| " << reel[0] << " | " << reel[1] << " | " << reel[2] << " |"
+              << std::endl;
     screenSleep();
   }
 }
@@ -47,10 +48,10 @@ void SlotMachine::checkWinnings(unsigned &balance, unsigned bet) {
     balance += winnings;
 
     if (jackpot) {
-      std::cout << "Jackpot! You won $" << winnings << "\n";
+      std::cout << "Jackpot! You won $" << winnings << std::endl;
       screenSleep();
     } else {
-      std::cout << "You won $" << winnings << "\n";
+      std::cout << "You won $" << winnings << std::endl;
       screenSleep();
     }
   } else {

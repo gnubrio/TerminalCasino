@@ -1,10 +1,7 @@
 #pragma once
 
 #include "Deck.h"
-#include <string>
-#include <unordered_map>
-#include <utility>
-#include <vector>
+#include "pch.h"
 
 class Blackjack {
 public:

@@ -1,11 +1,6 @@
 #pragma once
 
-#include <chrono>
-#include <iostream>
-#include <thread>
-#include <string>
-#include <limits>
-#include <iterator>
+#include "pch.h"
 
 bool isStringValidInt(std::string &str);
 void screenClear();

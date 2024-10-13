@@ -1,12 +1,6 @@
 #pragma once
 
-#include <algorithm>
-#include <iostream>
-#include <random>
-#include <string>
-#include <unordered_map>
-#include <utility>
-#include <vector>
+#include "pch.h"
 
 class SlotMachine {
 public:

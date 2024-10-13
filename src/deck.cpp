@@ -1,4 +1,5 @@
 #include "Deck.h"
+#include "pch.h"
 
 Deck::Deck() { initialize(); }
 
@@ -20,6 +21,8 @@ void Deck::reset() {
 }
 
 void Deck::initialize() {
+  m_Deck.reserve(52);
+
   for (auto &suit : m_Suits) {
     for (auto &rank : m_Ranks) {
       m_Deck.push_back(std::make_pair(suit, rank));
