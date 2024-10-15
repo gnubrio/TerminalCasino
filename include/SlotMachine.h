@@ -1,6 +1,8 @@
 #pragma once
 
-#include "pch.h"
+#include <random>
+#include <string>
+#include <vector>
 
 class SlotMachine {
 public:

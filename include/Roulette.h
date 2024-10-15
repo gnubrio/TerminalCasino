@@ -1,6 +1,10 @@
 #pragma once
 
-#include "pch.h"
+#include <array>
+#include <random>
+#include <string>
+#include <unordered_map>
+#include <utility>
 
 class Roulette {
 public:
@@ -9,7 +13,7 @@ public:
   ~Roulette();
 
 private:
-  std::array<std::pair<std::string, std::string>, 37> m_Symbols = {
+  const std::array<std::pair<std::string, std::string>, 37> m_Symbols = {
       {{"00", "Green"}, {"01", "Red"},   {"02", "Black"}, {"03", "Red"},
        {"04", "Black"}, {"05", "Red"},   {"06", "Black"}, {"07", "Red"},
        {"08", "Black"}, {"09", "Red"},   {"10", "Black"}, {"11", "Black"},
@@ -20,13 +24,17 @@ private:
        {"28", "Black"}, {"29", "Black"}, {"30", "Red"},   {"31", "Black"},
        {"32", "Red"},   {"33", "Black"}, {"34", "Red"},   {"35", "Black"},
        {"36", "Red"}}};
-  std::array<std::string, 12> m_tableSymbols = {
+  std::pair<std::string, std::string> m_WinningSymbol;
+  const std::array<std::string, 12> m_TableSymbols = {
       "1st 12", "2nd 12", "3rd 12", "1 to 18",  "19 to 36", "Even",
       "Odd",    "Red",    "Black",  "Column 1", "Column 2", "Column 3"};
-  std::vector<std::string> userChoices;
+  std::unordered_map<std::string, std::string> m_TableSymbolOptions;
+  std::vector<std::string> m_UserChoices;
   std::mt19937 m_RandomGenerator;
 
-  void spin() const;
+  void spin();
   void getSymbolBets();
+  void checkWinnings(unsigned &balance, unsigned &bet);
+  int getRandomNumber(int min, int max);
   void initialize();
 };

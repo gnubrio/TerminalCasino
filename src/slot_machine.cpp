@@ -1,6 +1,10 @@
 #include "SlotMachine.h"
 #include "Utility.h"
-#include "pch.h"
+#include <algorithm>
+#include <iostream>
+#include <random>
+#include <string>
+#include <unordered_map>
 
 SlotMachine::SlotMachine() { initialize(); }
 

@@ -1,6 +1,10 @@
 #pragma once
 
-#include "pch.h"
+#include <array>
+#include <random>
+#include <string>
+#include <utility>
+#include <vector>
 
 class Deck {
 public:

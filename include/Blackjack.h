@@ -1,7 +1,9 @@
 #pragma once
 
 #include "Deck.h"
-#include "pch.h"
+#include <string>
+#include <utility>
+#include <vector>
 
 class Blackjack {
 public:

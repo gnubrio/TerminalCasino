@@ -1,7 +1,9 @@
 #include "Casino.h"
 #include "GamesMenu.h"
 #include "Utility.h"
-#include "pch.h"
+#include <algorithm>
+#include <iostream>
+#include <string>
 
 void mainMenu() {
   unsigned balance = 0;

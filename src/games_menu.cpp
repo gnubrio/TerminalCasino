@@ -3,7 +3,8 @@
 #include "Roulette.h"
 #include "SlotMachine.h"
 #include "Utility.h"
-#include "pch.h"
+#include <iostream>
+#include <string>
 
 void gamesMenu(unsigned &balance) {
   std::string userInput = "";
@@ -88,7 +89,7 @@ void gamesMenu(unsigned &balance) {
     } else if (userInput == "3") {
       Roulette Roulette;
       while (true) {
-        screenSleep();
+        screenClear();
         std::cout << "ROULETTE | Balance: $" << balance
                   << "\n(Enter) Play\n(1) Information\n(0) Exit\n> "
                   << std::flush;

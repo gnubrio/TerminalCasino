@@ -1,5 +1,9 @@
 #include "Deck.h"
-#include "pch.h"
+#include <algorithm>
+#include <random>
+#include <string>
+#include <utility>
+#include <vector>
 
 Deck::Deck() { initialize(); }
 

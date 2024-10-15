@@ -1,6 +1,6 @@
 #pragma once
 
-#include "pch.h"
+#include <string>
 
 bool isStringValidInt(std::string &str);
 void screenClear();
