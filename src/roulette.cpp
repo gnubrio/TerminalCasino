@@ -10,7 +10,13 @@
 Roulette::Roulette() { initialize(); }
 
 void Roulette::play(unsigned &balance, unsigned &bet) {
+  m_UserChoices.clear();
+
   getSymbolBets();
+  if (m_Exit) {
+    return;
+  }
+
   spin();
   checkWinnings(balance, bet);
 }
@@ -41,11 +47,18 @@ void Roulette::getSymbolBets() {
   std::string userInput = "";
 
   while (true) {
+    screenClear();
+
     for (unsigned i = 0; i < m_TableSymbols.size(); ++i) {
       std::cout << "(" << i + 1 << ") " << m_TableSymbols[i] << "\n";
     }
-    std::cout << "> " << std::flush;
+    std::cout << "(0) Cancel\n> " << std::flush;
     std::getline(std::cin, userInput);
+
+    if (userInput == "0") {
+      m_Exit = true;
+      return;
+    }
 
     if (!m_TableSymbolOptions.contains(userInput)) {
       screenClear();
