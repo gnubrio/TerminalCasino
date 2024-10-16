@@ -101,6 +101,14 @@ void gamesMenu(unsigned &balance) {
           if (bet != 0) {
             Roulette.play(balance, bet);
           }
+        } else if (userInput == "1") {
+          screenClear();
+          std::cout
+              << "ROULETTE | Information\n| 1st 12 | 3x\n| 2nd 12 | "
+                 "3x\n| 3rd 12 | 3x\n| 1 to 18 | 2x\n| 19 to 36 | 2x\n| "
+                 "Even/Odd | 2x\n| Red/Black | 2x\n| Columns | 3x\n(0) Exit\n> "
+              << std::flush;
+          std::getline(std::cin, userInput);
         } else if (userInput == "0") {
           break;
         } else {
