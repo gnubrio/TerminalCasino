@@ -63,7 +63,7 @@ void Blackjack::initialDeal() {
 
 void Blackjack::playerTurn() {
   std::string userInput = "";
-  int playerScore = 0;
+  int playerScore;
 
   while (true) {
     screenClear();
@@ -94,9 +94,8 @@ void Blackjack::playerTurn() {
 }
 
 void Blackjack::houseTurn() {
-  int houseScore = 0;
-
   while (true) {
+    int houseScore;
     screenClear();
     displayHands();
     screenSleep();
@@ -117,7 +116,7 @@ void Blackjack::houseTurn() {
 void Blackjack::displayHands(bool hide) const {
   screenClear();
   std::cout << "House hand: | ";
-  for (auto &card : m_HouseHand) {
+  for (const auto &card : m_HouseHand) {
     if (hide) {
       std::cout << "################ | ";
       hide = false;
@@ -128,7 +127,7 @@ void Blackjack::displayHands(bool hide) const {
   std::cout << "\n";
 
   std::cout << "Your hand: | ";
-  for (auto &card : m_PlayerHand) {
+  for (const auto &card : m_PlayerHand) {
     std::cout << card.second << " of " << card.first << " | ";
   }
   std::cout << "\n";

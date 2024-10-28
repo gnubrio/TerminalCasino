@@ -19,7 +19,7 @@ void SlotMachine::play(unsigned &balance, unsigned bet) {
 void SlotMachine::display() const {
   screenClear();
 
-  for (auto &reel : m_Reels) {
+  for (const auto &reel : m_Reels) {
     std::cout << "| " << reel[0] << " | " << reel[1] << " | " << reel[2] << " |"
               << std::endl;
     screenSleep();
@@ -30,12 +30,11 @@ void SlotMachine::checkWinnings(unsigned &balance, unsigned bet) {
   bool won = false;
   bool jackpot = false;
   int betModifier = 0;
-  int winnings = 0;
   std::unordered_map<std::string, int> betModifers = {
       {"C", 6}, {"O", 10}, {"B", 20}, {"G", 50}, {"7", 100},
   };
 
-  for (auto &reel : m_Reels) {
+  for (const auto &reel : m_Reels) {
     if (reel[0] == reel[1] && reel[1] == reel[2]) {
       won = true;
 
@@ -48,6 +47,7 @@ void SlotMachine::checkWinnings(unsigned &balance, unsigned bet) {
   }
 
   if (won) {
+    int winnings = 0;
     winnings += bet * betModifier;
     balance += winnings;
 

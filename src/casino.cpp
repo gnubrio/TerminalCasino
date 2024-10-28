@@ -60,7 +60,6 @@ void mainMenu() {
 
 void depositWithdrawalMenu(unsigned &balance) {
   const unsigned MAX_BALANCE = 9999999;
-  const unsigned MIN_BALANCE = 0;
   const unsigned originalBalance = balance;
   std::string userInput = "";
 
@@ -78,8 +77,7 @@ void depositWithdrawalMenu(unsigned &balance) {
       if (isStringValidInt(userInput)) {
         unsigned amount = std::stoul(userInput);
 
-        if (balance + amount >= MIN_BALANCE &&
-            balance + amount <= MAX_BALANCE) {
+        if (balance + amount <= MAX_BALANCE) {
           balance += amount;
 
           screenClear();
@@ -103,8 +101,7 @@ void depositWithdrawalMenu(unsigned &balance) {
       if (isStringValidInt(userInput)) {
         unsigned amount = std::stoul(userInput);
 
-        if (balance - amount >= MIN_BALANCE &&
-            balance - amount <= MAX_BALANCE) {
+        if (balance - amount <= MAX_BALANCE) {
           balance -= amount;
 
           screenClear();
@@ -121,7 +118,7 @@ void depositWithdrawalMenu(unsigned &balance) {
         screenSleep();
       }
     } else if (userInput == "0") {
-      if (balance >= MIN_BALANCE && balance <= MAX_BALANCE) {
+      if (balance <= MAX_BALANCE) {
         screenClear();
         std::cout << "New balance: $" << balance << std::endl;
         screenSleep();

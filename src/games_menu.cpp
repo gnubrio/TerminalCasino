@@ -137,7 +137,7 @@ unsigned getBet(const unsigned balance) {
     if (isStringValidInt(userInput)) {
       unsigned amount = std::stoul(userInput);
 
-      if (amount >= MIN_BET && amount <= MAX_BET && amount <= balance) {
+      if (amount <= MAX_BET && amount <= balance) {
         screenClear();
         std::cout << "Betting $" << amount << std::endl;
         screenSleep();

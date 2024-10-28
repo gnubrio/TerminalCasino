@@ -2,6 +2,6 @@
 
 #include <string>
 
-bool isStringValidInt(std::string &str);
+bool isStringValidInt(const std::string &str);
 void screenClear();
 void screenSleep(int seconds = 1);

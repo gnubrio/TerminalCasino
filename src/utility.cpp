@@ -4,7 +4,7 @@
 #include <string>
 #include <thread>
 
-bool isStringValidInt(std::string &str) {
+bool isStringValidInt(const std::string &str) {
   std::string::const_iterator it = str.begin();
 
   while (it != str.end() && std::isdigit(*it)) {
