@@ -87,14 +87,14 @@ void Blackjack::bet(Pocket &pocket) {
     int amount = 1;
     bettingChip_ = Chip(value, color);
 
+    std::transform(color.begin(), color.end(), color.begin(),
+                   [](unsigned char c) { return std::tolower(c); });
     if (!pocket.hasEnoughChips(bettingChip_, amount)) {
       screenClear();
       std::cout << "I don't have enough " << color << " chips." << std::endl;
       screenSleep();
       continue;
     }
-    std::transform(color.begin(), color.end(), color.begin(),
-                   [](unsigned char c) { return std::tolower(c); });
     screenClear();
     std::cout << "Betting " << color << " chip." << std::endl;
     return;
