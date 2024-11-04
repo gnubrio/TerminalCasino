@@ -17,13 +17,16 @@ const std::array<std::pair<int, std::string>, 8> Chip::chipValues_ = {{
 Chip::Chip() {}
 
 Chip::Chip(int value, std::string color) : value_(value), color_(color) {}
+
 Chip::Chip(int value, std::string color, int amount)
     : value_(value), color_(color), amount_(amount) {}
 
 Chip::~Chip() {}
 
 int Chip::getValue() const { return value_; }
+
 std::string Chip::getColor() const { return color_; }
+
 int Chip::getAmount() const { return amount_; }
 
 void Chip::add(const int amountToAdd) { amount_ += amountToAdd; }
