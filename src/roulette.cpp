@@ -1,5 +1,7 @@
-#include "Roulette.h"
-#include "Utility.h"
+#include "Roulette.hpp"
+#include "Pocket.hpp"
+#include "Utility.hpp"
+#include "Chip.hpp"
 #include <chrono>
 #include <iostream>
 #include <random>
@@ -9,16 +11,75 @@
 
 Roulette::Roulette() { initialize(); }
 
-void Roulette::play(unsigned &balance, unsigned &bet) {
-  m_UserChoices.clear();
+Roulette::~Roulette() {}
 
-  getSymbolBets();
-  if (m_Exit) {
+void Roulette::play(Pocket &pocket) {
+  userChoices_.clear();
+  exit_ = false;
+
+  bet(pocket);
+  if (exit_) {
+    return;
+  }
+  getSymbolBets(pocket);
+  if (exit_) {
     return;
   }
 
   spin();
-  checkWinnings(balance, bet);
+  checkWinnings(pocket);
+}
+
+void Roulette::bet(Pocket &pocket) {
+  std::string userInput = "";
+
+  while (true) {
+    int value = 0;
+    std::string color = "";
+
+    screenClear();
+    std::cout << "BET | ";
+    pocket.displayPocket();
+    std::cout << "\n";
+    std::unordered_map<int, int> options;
+    pocket.displayPocketOptions(options);
+    std::cout << "(0) Leave\n> ";
+    std::getline(std::cin, userInput);
+
+    if (userInput == "0") {
+      exit_ = true;
+      return;
+    } else if (!isStringValidInt(userInput)) {
+      screenClear();
+      std::cout << userInput << " is not a number." << std::endl;
+      screenSleep();
+      continue;
+    }
+    int choice = std::stoi(userInput);
+
+    if (!options.contains(choice)) {
+      screenClear();
+      std::cout << userInput << " isn't an option." << std::endl;
+      screenSleep();
+      continue;
+    }
+    value = options[choice];
+    color = Chip::getColorFromValue(value);
+    int amount = 1;
+    bettingChip_ = Chip(value, color);
+
+    if (!pocket.hasEnoughChips(bettingChip_, amount)) {
+      screenClear();
+      std::cout << "I don't have enough " << color << " chips." << std::endl;
+      screenSleep();
+      continue;
+    }
+    std::transform(color.begin(), color.end(), color.begin(),
+                   [](unsigned char c) { return std::tolower(c); });
+    screenClear();
+    std::cout << "Betting " << color << " chip." << std::endl;
+    return;
+  }
 }
 
 void Roulette::spin() {
@@ -26,15 +87,15 @@ void Roulette::spin() {
   screenClear();
 
   for (unsigned i = getRandomNumber(0, 37);; ++i) {
-    if (i == m_Symbols.size()) {
+    if (i == symbols_.size()) {
       i = 0;
     }
-    std::cout << "| " << m_Symbols[i].first << m_Symbols[i].second[0] << " |"
+    std::cout << "| " << symbols_[i].first << symbols_[i].second[0] << " |"
               << std::flush;
     std::this_thread::sleep_for(std::chrono::milliseconds(ms));
 
     if (ms > 250) {
-      m_WinningSymbol = m_Symbols[i];
+      winningSymbol_ = symbols_[i];
       screenSleep();
       break;
     }
@@ -43,43 +104,47 @@ void Roulette::spin() {
   }
 }
 
-void Roulette::getSymbolBets() {
+void Roulette::getSymbolBets(Pocket &pocket) {
   std::string userInput = "";
 
   while (true) {
     screenClear();
-
-    for (unsigned i = 0; i < m_TableSymbols.size(); ++i) {
-      std::cout << "(" << i + 1 << ") " << m_TableSymbols[i] << "\n";
+    std::cout << "BET | ";
+    pocket.displayPocket();
+    std::cout << "\n";
+    for (unsigned i = 0; i < tableSymbols_.size(); ++i) {
+      std::cout << "(" << i + 1 << ") " << tableSymbols_[i] << "\n";
     }
     std::cout << "(0) Cancel\n> " << std::flush;
     std::getline(std::cin, userInput);
 
     if (userInput == "0") {
-      m_Exit = true;
+      exit_ = true;
       return;
     }
 
-    if (!m_TableSymbolOptions.contains(userInput)) {
+    if (!tableSymbolOptions_.contains(userInput)) {
       screenClear();
       std::cout << "Invalid Input" << std::endl;
       screenSleep();
       continue;
     }
 
-    for (const auto &[key, value] : m_TableSymbolOptions) {
+    for (const auto &[key, value] : tableSymbolOptions_) {
       if (key == userInput) {
-        m_UserChoices.push_back(value);
+        userChoices_.push_back(value);
         return;
       }
     }
   }
 }
 
-void Roulette::checkWinnings(unsigned &balance, unsigned &bet) {
+void Roulette::checkWinnings(Pocket &pocket) {
+  const int LOSE_AMOUNT = 1;
+  int value = bettingChip_.getValue();
   int betModifer = 0;
-  int winningNumber = std::stoi(m_WinningSymbol.first);
-  std::string winningColor = m_WinningSymbol.second;
+  int winningNumber = std::stoi(winningSymbol_.first);
+  std::string winningColor = winningSymbol_.second;
 
   auto inOrderedRange = [](int x, int min, int max) {
     return x >= min && x <= max;
@@ -91,52 +156,52 @@ void Roulette::checkWinnings(unsigned &balance, unsigned &bet) {
     return false;
   };
 
-  for (const auto &choice : m_UserChoices) {
-    if (choice == m_TableSymbols[0]) {
+  for (const auto &choice : userChoices_) {
+    if (choice == tableSymbols_[0]) {
       if (inOrderedRange(winningNumber, 1, 12)) {
         betModifer += 3;
       }
-    } else if (choice == m_TableSymbols[1]) {
+    } else if (choice == tableSymbols_[1]) {
       if (inOrderedRange(winningNumber, 13, 24)) {
         betModifer += 3;
       }
-    } else if (choice == m_TableSymbols[2]) {
+    } else if (choice == tableSymbols_[2]) {
       if (inOrderedRange(winningNumber, 25, 36)) {
         betModifer += 3;
       }
-    } else if (choice == m_TableSymbols[3]) {
+    } else if (choice == tableSymbols_[3]) {
       if (inOrderedRange(winningNumber, 1, 18)) {
         betModifer += 2;
       }
-    } else if (choice == m_TableSymbols[4]) {
+    } else if (choice == tableSymbols_[4]) {
       if (inOrderedRange(winningNumber, 19, 36)) {
         betModifer += 2;
       }
-    } else if (choice == m_TableSymbols[5]) {
+    } else if (choice == tableSymbols_[5]) {
       if (winningNumber % 2 == 0) {
         betModifer += 2;
       }
-    } else if (choice == m_TableSymbols[6]) {
+    } else if (choice == tableSymbols_[6]) {
       if (winningNumber % 2 != 0) {
         betModifer += 2;
       }
-    } else if (choice == m_TableSymbols[7]) {
+    } else if (choice == tableSymbols_[7]) {
       if (winningColor == "Red") {
         betModifer += 2;
       }
-    } else if (choice == m_TableSymbols[8]) {
+    } else if (choice == tableSymbols_[8]) {
       if (winningColor == "Black") {
         betModifer += 2;
       }
-    } else if (choice == m_TableSymbols[9]) {
+    } else if (choice == tableSymbols_[9]) {
       if (inColumnRange(winningNumber, 1, 34)) {
         betModifer += 3;
       }
-    } else if (choice == m_TableSymbols[10]) {
+    } else if (choice == tableSymbols_[10]) {
       if (inColumnRange(winningNumber, 2, 35)) {
         betModifer += 3;
       }
-    } else if (choice == m_TableSymbols[11]) {
+    } else if (choice == tableSymbols_[11]) {
       if (inColumnRange(winningNumber, 3, 36)) {
         betModifer += 3;
       }
@@ -144,10 +209,11 @@ void Roulette::checkWinnings(unsigned &balance, unsigned &bet) {
   }
 
   if (betModifer == 0) {
-    balance -= bet;
+    Chip chip = pocket.findChip(value);
+    pocket.removeChips(chip, LOSE_AMOUNT);
   } else {
-    int winnings = bet * betModifer;
-    balance += winnings;
+    int winnings = value * betModifer;
+    pocket.addChips(bettingChip_, betModifer);
 
     screenClear();
     std::cout << "You won $" << winnings << "!" << std::endl;
@@ -157,15 +223,13 @@ void Roulette::checkWinnings(unsigned &balance, unsigned &bet) {
 
 int Roulette::getRandomNumber(int min, int max) {
   std::uniform_int_distribution<int> dist(min, max);
-  return dist(m_RandomGenerator);
+  return dist(randomGenerator_);
 }
 
 void Roulette::initialize() {
-  for (unsigned i = 0; i < m_TableSymbols.size(); ++i) {
-    m_TableSymbolOptions[std::to_string(i + 1)] = m_TableSymbols[i];
+  for (unsigned i = 0; i < tableSymbols_.size(); ++i) {
+    tableSymbolOptions_[std::to_string(i + 1)] = tableSymbols_[i];
   }
 
-  m_RandomGenerator.seed(std::random_device{}());
+  randomGenerator_.seed(std::random_device{}());
 }
-
-Roulette::~Roulette() {}

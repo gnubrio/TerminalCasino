@@ -1,63 +1,127 @@
-#include "Blackjack.h"
-#include "Deck.h"
-#include "Utility.h"
+#include "Blackjack.hpp"
+#include "Chip.hpp"
+#include "Deck.hpp"
+#include "Pocket.hpp"
+#include "Utility.hpp"
+#include <algorithm>
 #include <iostream>
 #include <string>
+#include <unordered_map>
 #include <utility>
 #include <vector>
 
 Blackjack::Blackjack() {}
 
-void Blackjack::play(unsigned &balance, unsigned &bet) {
-  m_PlayerWin = false;
-  m_PlayerBust = false;
-  m_HouseBust = false;
-  m_PlayerHand.clear();
-  m_HouseHand.clear();
-  m_Deck.reset();
-  m_Deck.shuffle();
+Blackjack::~Blackjack() {}
+
+void Blackjack::play(Pocket &pocket) {
+  playerWin_ = false;
+  playerBust_ = false;
+  houseBust_ = false;
+  exit_ = false;
+  playerHand_.clear();
+  houseHand_.clear();
+  deck_.reset();
+  deck_.shuffle();
+
+  bet(pocket);
+  if (exit_) {
+    return;
+  }
 
   initialDeal();
-  checkWin(balance, bet);
+  checkWin(pocket);
 
-  if (m_PlayerWin) {
+  if (playerWin_) {
     return;
   }
 
   playerTurn();
-  checkWin(balance, bet);
+  checkWin(pocket);
 
-  if (m_PlayerWin || m_PlayerBust) {
+  if (playerWin_ || playerBust_) {
     return;
   }
 
   houseTurn();
-  checkWin(balance, bet, true);
+  checkWin(pocket, true);
 
   screenSleep(3);
 }
 
+void Blackjack::bet(Pocket &pocket) {
+  std::string userInput = "";
+
+  while (true) {
+    int value = 0;
+    std::string color = "";
+
+    screenClear();
+    std::cout << "BET | ";
+    pocket.displayPocket();
+    std::cout << "\n";
+    std::unordered_map<int, int> options;
+    pocket.displayPocketOptions(options);
+    std::cout << "(0) Leave\n> ";
+    std::getline(std::cin, userInput);
+
+    if (userInput == "0") {
+      exit_ = true;
+      return;
+    } else if (!isStringValidInt(userInput)) {
+      screenClear();
+      std::cout << userInput << " is not a number." << std::endl;
+      screenSleep();
+      continue;
+    }
+    int choice = std::stoi(userInput);
+
+    if (!options.contains(choice)) {
+      screenClear();
+      std::cout << userInput << " isn't an option." << std::endl;
+      screenSleep();
+      continue;
+    }
+    value = options[choice];
+    color = Chip::getColorFromValue(value);
+    int amount = 1;
+    bettingChip_ = Chip(value, color);
+
+    if (!pocket.hasEnoughChips(bettingChip_, amount)) {
+      screenClear();
+      std::cout << "I don't have enough " << color << " chips." << std::endl;
+      screenSleep();
+      continue;
+    }
+    std::transform(color.begin(), color.end(), color.begin(),
+                   [](unsigned char c) { return std::tolower(c); });
+    screenClear();
+    std::cout << "Betting " << color << " chip." << std::endl;
+    return;
+  }
+}
+
 void Blackjack::initialDeal() {
-  m_Deck.pullCard(m_PlayerHand, 2);
-  m_Deck.pullCard(m_HouseHand, 2);
+  deck_.pullCard(playerHand_, 2);
+  deck_.pullCard(houseHand_, 2);
 
   screenClear();
-  std::cout << "You drew: | " << (m_PlayerHand[0].second) << " of "
-            << m_PlayerHand[0].first << " |\n";
+  std::cout << "You drew: | " << (playerHand_[0].second) << " of "
+            << playerHand_[0].first << " |\n";
   screenSleep();
   std::cout << "House drew: | ################|\n";
   screenSleep();
-  std::cout << "You drew: | " << m_PlayerHand[1].second << " of "
-            << m_PlayerHand[1].first << " |\n";
+  std::cout << "You drew: | " << playerHand_[1].second << " of "
+            << playerHand_[1].first << " |\n";
   screenSleep();
-  std::cout << "House drew: | " << m_HouseHand[1].second << " of "
-            << m_HouseHand[1].first << " |\n";
+  std::cout << "House drew: | " << houseHand_[1].second << " of "
+            << houseHand_[1].first << " |\n";
   screenSleep();
 
-  int playerScore = checkHandValue(m_PlayerHand);
+  int playerScore = checkHandValue(playerHand_);
 
   if (playerScore == 21) {
-    m_PlayerWin = true;
+    playerWin_ = true;
   }
 }
 
@@ -73,14 +137,14 @@ void Blackjack::playerTurn() {
     std::getline(std::cin, userInput);
 
     if (userInput == "1") {
-      m_Deck.pullCard(m_PlayerHand);
-      playerScore = checkHandValue(m_PlayerHand);
+      deck_.pullCard(playerHand_);
+      playerScore = checkHandValue(playerHand_);
 
       if (playerScore == 21) {
-        m_PlayerWin = true;
+        playerWin_ = true;
         return;
       } else if (playerScore > 21) {
-        m_PlayerBust = true;
+        playerBust_ = true;
         return;
       }
     } else if (userInput == "2") {
@@ -100,13 +164,13 @@ void Blackjack::houseTurn() {
     displayHands();
     screenSleep();
 
-    houseScore = checkHandValue(m_HouseHand);
+    houseScore = checkHandValue(houseHand_);
 
     if (houseScore > 21) {
-      m_HouseBust = true;
+      houseBust_ = true;
       return;
     } else if (houseScore < 17) {
-      m_Deck.pullCard(m_HouseHand);
+      deck_.pullCard(houseHand_);
     } else {
       return;
     }
@@ -116,7 +180,7 @@ void Blackjack::houseTurn() {
 void Blackjack::displayHands(bool hide) const {
   screenClear();
   std::cout << "House hand: | ";
-  for (const auto &card : m_HouseHand) {
+  for (const auto &card : houseHand_) {
     if (hide) {
       std::cout << "################ | ";
       hide = false;
@@ -127,7 +191,7 @@ void Blackjack::displayHands(bool hide) const {
   std::cout << "\n";
 
   std::cout << "Your hand: | ";
-  for (const auto &card : m_PlayerHand) {
+  for (const auto &card : playerHand_) {
     std::cout << card.second << " of " << card.first << " | ";
   }
   std::cout << "\n";
@@ -160,7 +224,12 @@ int Blackjack::checkHandValue(
   return score;
 }
 
-void Blackjack::checkWin(unsigned &balance, unsigned &bet, bool end) {
+void Blackjack::checkWin(Pocket &pocket, bool end) {
+  const int WIN_AMOUNT = 1;
+  const int LOSE_AMOUNT = 1;
+  int value = bettingChip_.getValue();
+  std::string color = "";
+
   screenClear();
   if (!end) {
     displayHands();
@@ -168,16 +237,17 @@ void Blackjack::checkWin(unsigned &balance, unsigned &bet, bool end) {
     displayHands(false);
   }
 
-  if (m_PlayerWin) {
-    int winnings = bet * 2;
-    balance += winnings;
+  if (playerWin_) {
+    pocket.addChips(bettingChip_, WIN_AMOUNT);
 
-    std::cout << "Blackjack! You won: $" << winnings << "\n";
+    std::cout << "Blackjack! You won: $" << value << "\n";
     screenSleep();
 
     return;
-  } else if (m_PlayerBust) {
-    balance -= bet;
+  } else if (playerBust_) {
+    std::string color = Chip::getColorFromValue(value);
+    Chip chip(value, color);
+    pocket.removeChips(chip, LOSE_AMOUNT);
 
     std::cout << "Bust!\n";
     screenSleep();
@@ -185,30 +255,30 @@ void Blackjack::checkWin(unsigned &balance, unsigned &bet, bool end) {
     return;
   }
 
-  if (m_HouseBust) {
-    int winnings = bet * 2;
-    balance += winnings;
+  if (houseBust_) {
+    pocket.addChips(bettingChip_, WIN_AMOUNT);
 
-    std::cout << "House bust! You won: $" << winnings << "\n";
+    std::cout << "House bust! You won: $" << value << "\n";
     screenSleep();
 
     return;
   }
 
   if (end) {
-    int playerScore = checkHandValue(m_PlayerHand);
-    int houseScore = checkHandValue(m_HouseHand);
+    int playerScore = checkHandValue(playerHand_);
+    int houseScore = checkHandValue(houseHand_);
 
     if (playerScore >= houseScore) {
-      int winnings = bet * 2;
-      balance += winnings;
+      pocket.addChips(bettingChip_, WIN_AMOUNT);
 
-      std::cout << "You won: $" << winnings << "\n";
+      std::cout << "You won: $" << value << "\n";
       screenSleep();
 
       return;
     } else {
-      balance -= bet;
+      std::string color = Chip::getColorFromValue(value);
+      Chip chip(value, color);
+      pocket.removeChips(chip, LOSE_AMOUNT);
 
       std::cout << "You lost\n";
       screenSleep();
@@ -217,5 +287,3 @@ void Blackjack::checkWin(unsigned &balance, unsigned &bet, bool end) {
     }
   }
 }
-
-Blackjack::~Blackjack() {}

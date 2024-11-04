@@ -1,4 +1,4 @@
-#include "Casino.h"
+#include "Casino.hpp"
 
 int main(void) {
   mainMenu();

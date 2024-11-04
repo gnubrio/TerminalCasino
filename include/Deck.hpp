@@ -16,13 +16,13 @@ public:
   ~Deck();
 
 private:
-  std::vector<std::pair<std::string, std::string>> m_Deck;
-  const std::array<std::string, 4> m_Suits = {"Diamond", "Spades", "Hearts",
+  std::vector<std::pair<std::string, std::string>> deck_;
+  const std::array<std::string, 4> suits_ = {"Diamond", "Spades", "Hearts",
                                               "Clubs"};
-  const std::array<std::string, 13> m_Ranks = {
+  const std::array<std::string, 13> ranks_ = {
       "Ace", "2", "3",  "4",    "5",     "6",   "7",
       "8",   "9", "10", "Jack", "Queen", "King"};
-  std::mt19937 m_RandomGenerator;
+  std::mt19937 randomGenerator_;
 
   void initialize();
 };

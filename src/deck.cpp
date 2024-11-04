@@ -1,4 +1,4 @@
-#include "Deck.h"
+#include "Deck.hpp"
 #include <algorithm>
 #include <random>
 #include <string>
@@ -7,33 +7,33 @@
 
 Deck::Deck() { initialize(); }
 
+Deck::~Deck() {}
+
 void Deck::pullCard(std::vector<std::pair<std::string, std::string>> &hand,
                     int count) {
   for (int i = 0; i < count; ++i) {
-    hand.push_back(m_Deck.back());
-    m_Deck.pop_back();
+    hand.push_back(deck_.back());
+    deck_.pop_back();
   }
 }
 
 void Deck::shuffle() {
-  std::shuffle(m_Deck.begin(), m_Deck.end(), m_RandomGenerator);
+  std::shuffle(deck_.begin(), deck_.end(), randomGenerator_);
 }
 
 void Deck::reset() {
-  m_Deck.clear();
+  deck_.clear();
   initialize();
 }
 
 void Deck::initialize() {
-  m_Deck.reserve(52);
+  deck_.reserve(52);
 
-  for (auto &suit : m_Suits) {
-    for (auto &rank : m_Ranks) {
-      m_Deck.push_back(std::make_pair(suit, rank));
+  for (auto &suit : suits_) {
+    for (auto &rank : ranks_) {
+      deck_.push_back(std::make_pair(suit, rank));
     }
   }
 
-  m_RandomGenerator.seed(std::random_device{}());
+  randomGenerator_.seed(std::random_device{}());
 }
-
-Deck::~Deck() {}
