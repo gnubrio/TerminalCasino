@@ -246,7 +246,6 @@ void Blackjack::checkWin(Pocket &pocket, bool end) {
 
     return;
   } else if (playerBust_) {
-    std::string color = Chip::getColorFromValue(value);
     Chip chip(value, color);
     pocket.removeChips(chip, LOSE_AMOUNT);
 
@@ -277,7 +276,7 @@ void Blackjack::checkWin(Pocket &pocket, bool end) {
 
       return;
     } else {
-      std::string color = Chip::getColorFromValue(value);
+      color = Chip::getColorFromValue(value);
       Chip chip(value, color);
       pocket.removeChips(chip, LOSE_AMOUNT);
 
