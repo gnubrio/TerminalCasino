@@ -13,6 +13,7 @@ public:
 
   void addChips(const Chip &chipToAdd, const int amountToAdd);
   void removeChips(const Chip &chipToRemove, const int amountToRemove);
+  void outOfChipsCheck();
   bool hasChip(const Chip &chipToCheck) const;
   bool hasEnoughChips(const Chip &chipToCheck, const int amount) const;
   Chip findChip(const int value);

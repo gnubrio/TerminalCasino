@@ -279,6 +279,7 @@ void displayGameMenu(T &game, const char *&location, const char *&information,
   std::string userInput = "";
 
   while (true) {
+    pocket.outOfChipsCheck();
     screenClear();
     std::cout << location << " | ";
     pocket.displayPocket();

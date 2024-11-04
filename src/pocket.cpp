@@ -40,6 +40,13 @@ void Pocket::removeChips(const Chip &chipToRemove, const int amountToRemove) {
   return;
 }
 
+void Pocket::outOfChipsCheck() {
+  pocket_.erase(
+      std::remove_if(pocket_.begin(), pocket_.end(),
+                     [](const Chip &chip) { return chip.getAmount() == 0; }),
+      pocket_.end());
+}
+
 bool Pocket::hasChip(const Chip &chipToCheck) const {
   if (pocket_.empty()) {
     return false;

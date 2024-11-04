@@ -78,6 +78,7 @@ void Roulette::bet(Pocket &pocket) {
     }
     screenClear();
     std::cout << "Betting " << color << " chip." << std::endl;
+    screenSleep();
     return;
   }
 }
