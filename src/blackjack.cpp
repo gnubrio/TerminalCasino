@@ -33,6 +33,7 @@ void Blackjack::play(Pocket &pocket) {
   checkWin(pocket);
 
   if (playerWin_) {
+    screenSleep(2);
     return;
   }
 
@@ -40,13 +41,14 @@ void Blackjack::play(Pocket &pocket) {
   checkWin(pocket);
 
   if (playerWin_ || playerBust_) {
+    screenSleep(2);
     return;
   }
 
   houseTurn();
   checkWin(pocket, true);
 
-  screenSleep(3);
+  screenSleep(2);
 }
 
 void Blackjack::bet(Pocket &pocket) {

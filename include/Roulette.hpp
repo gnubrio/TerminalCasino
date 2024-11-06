@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Pocket.hpp"
 #include "Chip.hpp"
+#include "Pocket.hpp"
 #include <array>
 #include <random>
 #include <string>
@@ -41,5 +41,4 @@ private:
   void getSymbolBets(Pocket &pocket);
   void checkWinnings(Pocket &pocket);
   int getRandomNumber(int min, int max);
-  void initialize();
 };

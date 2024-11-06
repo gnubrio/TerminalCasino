@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Deck.hpp"
 #include "Chip.hpp"
+#include "Deck.hpp"
 #include "Pocket.hpp"
 #include <string>
 #include <utility>

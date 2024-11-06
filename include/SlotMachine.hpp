@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Pocket.hpp"
 #include "Chip.hpp"
+#include "Pocket.hpp"
 #include <random>
 #include <string>
 #include <vector>
@@ -14,7 +14,7 @@ public:
 
 private:
   Chip bettingChip_;
-  const int numberOfReels_ = 3;
+  const int numberOfReels_ = 5;
   std::vector<std::vector<std::string>> reels_;
   const std::vector<std::pair<std::string, int>> symbolCounts_ = {
       {"C", 7}, {"O", 5}, {"B", 4}, {"G", 3}, {"7", 1}};
@@ -25,5 +25,4 @@ private:
   void display() const;
   void checkWinnings(Pocket &pocket);
   void spin();
-  void initialize();
 };

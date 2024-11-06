@@ -63,6 +63,7 @@ void cashiersCage(unsigned int &balance, Pocket &pocket) {
   std::string userInput = "";
 
   while (true) {
+    pocket.outOfChipsCheck();
     screenClear();
     std::cout << "CASHIER'S CAGE | Balance: $" << balance << " | ";
     pocket.displayPocket();

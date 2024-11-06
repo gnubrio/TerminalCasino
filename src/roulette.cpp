@@ -1,7 +1,7 @@
 #include "Roulette.hpp"
+#include "Chip.hpp"
 #include "Pocket.hpp"
 #include "Utility.hpp"
-#include "Chip.hpp"
 #include <chrono>
 #include <iostream>
 #include <random>
@@ -9,7 +9,13 @@
 #include <thread>
 #include <unordered_map>
 
-Roulette::Roulette() { initialize(); }
+Roulette::Roulette() {
+  for (unsigned i = 0; i < tableSymbols_.size(); ++i) {
+    tableSymbolOptions_[std::to_string(i + 1)] = tableSymbols_[i];
+  }
+
+  randomGenerator_.seed(std::random_device{}());
+}
 
 Roulette::~Roulette() {}
 
@@ -28,6 +34,7 @@ void Roulette::play(Pocket &pocket) {
 
   spin();
   checkWinnings(pocket);
+  screenSleep(2);
 }
 
 void Roulette::bet(Pocket &pocket) {
@@ -214,7 +221,7 @@ void Roulette::checkWinnings(Pocket &pocket) {
     pocket.removeChips(chip, LOSE_AMOUNT);
   } else {
     int winnings = value * betModifer;
-    pocket.addChips(bettingChip_, betModifer);
+    pocket.addChips(bettingChip_, betModifer - 1);
 
     screenClear();
     std::cout << "You won $" << winnings << "!" << std::endl;
@@ -225,12 +232,4 @@ void Roulette::checkWinnings(Pocket &pocket) {
 int Roulette::getRandomNumber(int min, int max) {
   std::uniform_int_distribution<int> dist(min, max);
   return dist(randomGenerator_);
-}
-
-void Roulette::initialize() {
-  for (unsigned i = 0; i < tableSymbols_.size(); ++i) {
-    tableSymbolOptions_[std::to_string(i + 1)] = tableSymbols_[i];
-  }
-
-  randomGenerator_.seed(std::random_device{}());
 }

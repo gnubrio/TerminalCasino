@@ -8,7 +8,19 @@
 #include <string>
 #include <unordered_map>
 
-SlotMachine::SlotMachine() { initialize(); }
+SlotMachine::SlotMachine() {
+  for (int i = 0; i < numberOfReels_; ++i) {
+    std::vector<std::string> reel;
+
+    for (auto &[symbol, count] : symbolCounts_) {
+      for (int j = 0; j < count; ++j) {
+        reel.push_back(symbol);
+      }
+    }
+    reels_.push_back(reel);
+  }
+  randomGenerator_.seed(std::random_device{}());
+}
 
 SlotMachine::~SlotMachine() {}
 
@@ -133,21 +145,4 @@ void SlotMachine::spin() {
   for (auto &reel : reels_) {
     std::shuffle(reel.begin(), reel.end(), randomGenerator_);
   }
-}
-
-void SlotMachine::initialize() {
-  for (int i = 0; i < numberOfReels_; ++i) {
-    std::vector<std::string> reel;
-    reels_.push_back(reel);
-  }
-
-  for (auto &reel : reels_) {
-    for (auto &[symbol, count] : symbolCounts_) {
-      for (int i = 0; i < count; ++i) {
-        reel.push_back(symbol);
-      }
-    }
-  }
-
-  randomGenerator_.seed(std::random_device{}());
 }
